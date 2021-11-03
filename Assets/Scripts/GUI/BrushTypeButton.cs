@@ -125,7 +125,7 @@ namespace TiltBrush
 
         override protected void OnButtonPressed()
         {
-            BrushController.m_Instance.SetActiveBrush(m_Brush);
+            BrushController.instance.SetActiveBrush(m_Brush);
         }
 
         override public void ResetState()

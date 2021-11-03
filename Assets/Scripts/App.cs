@@ -895,7 +895,7 @@ namespace TiltBrush
                         {
                             if (AppAllowsCreation())
                             {
-                                BrushController.m_Instance.SetBrushToDefault();
+                                BrushController.instance.SetBrushToDefault();
                                 BrushColor.SetColorToDefault();
                             }
                             else
@@ -1142,7 +1142,7 @@ namespace TiltBrush
             PointerManager.m_Instance.AllowPointerPreviewLine(false);
 
             // Switch to the default brush type and size.
-            BrushController.m_Instance.SetBrushToDefault();
+            BrushController.instance.SetBrushToDefault();
 
             // Disable audio reactive mode.
             if (m_RequestingAudioReactiveMode)

@@ -211,7 +211,7 @@ namespace TiltBrush
 
                 if (m_SelectionStroke != null)
                 {
-                    BrushController.m_Instance.TriggerStrokeSelected(m_SelectionStroke);
+                    BrushController.instance.TriggerStrokeSelected(m_SelectionStroke);
                 }
                 // Let go so it can be GC'd
                 m_SelectionStroke = null;

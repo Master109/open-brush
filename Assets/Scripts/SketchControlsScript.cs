@@ -794,7 +794,7 @@ namespace TiltBrush
         {
             m_Instance = this;
 
-            BrushController.m_Instance.BrushSetToDefault += OnBrushSetToDefault;
+            BrushController.instance.BrushSetToDefault += OnBrushSetToDefault;
 
             IconTextureAtlas.Init();
 

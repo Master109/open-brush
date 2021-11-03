@@ -1,0 +1,88 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2062062401326922413
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5265275015777404710}
+  - component: {fileID: 900518574969316715}
+  m_Layer: 0
+  m_Name: Art Module
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5265275015777404710
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2062062401326922413}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &900518574969316715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2062062401326922413}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e24419d8f77829f4ca18d58b750e0885, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handleMultipleInstances: 0
+  persistant: 0
+  leftHand:
+    isLeftHand: 1
+    trs: {fileID: 0}
+    triggerInput: 0
+    previousTriggerInput: 0
+    gripInput: 0
+    previousGripInput: 0
+    primaryButtonInput: 0
+    previousPrimaryButtonInput: 0
+    secondaryButtonInput: 0
+    previousSecondaryButtonInput: 0
+    thumbstickClickedInput: 0
+    previousThumbstickClickedInput: 0
+    thumbstickInput: {x: 0, y: 0}
+    previousThumbstickInput: {x: 0, y: 0}
+    previousPosition: {x: 0, y: 0, z: 0}
+    gripTrs: {fileID: 0}
+    currrentBrush: {fileID: 0}
+  rightHand:
+    isLeftHand: 0
+    trs: {fileID: 0}
+    triggerInput: 0
+    previousTriggerInput: 0
+    gripInput: 0
+    previousGripInput: 0
+    primaryButtonInput: 0
+    previousPrimaryButtonInput: 0
+    secondaryButtonInput: 0
+    previousSecondaryButtonInput: 0
+    thumbstickClickedInput: 0
+    previousThumbstickClickedInput: 0
+    thumbstickInput: {x: 0, y: 0}
+    previousThumbstickInput: {x: 0, y: 0}
+    previousPosition: {x: 0, y: 0, z: 0}
+    gripTrs: {fileID: 0}
+    currrentBrush: {fileID: 0}
+  minAngleToSwitchHands: 135
+  maxDistanceToSwitchHands: 0.5
+  minSpeedToSwitchHands: 0.1
+  menusInLeftHand: 1

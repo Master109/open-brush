@@ -21,22 +21,13 @@ namespace TiltBrush
     // Brush Controller is an unfortunate name for this class, as it refers to the MVC "Controller"
     // for storing information about the app state regarding the currently active brush.  It also
     // maintains actions for objects to register with for status change notifications.
-    public class BrushController : MonoBehaviour
+    public class BrushController : SingletonMonoBehaviour<BrushController>
     {
-        static public BrushController m_Instance;
-
         public event Action<Stroke> StrokeSelected;
         public event Action<BrushDescriptor> BrushChanged;
         public event Action BrushSetToDefault;
-
-        private BrushDescriptor m_ActiveBrush;
-
         public BrushDescriptor ActiveBrush { get { return m_ActiveBrush; } }
-
-        void Awake()
-        {
-            m_Instance = this;
-        }
+        private BrushDescriptor m_ActiveBrush;
 
         public void SetActiveBrush(BrushDescriptor brush)
         {

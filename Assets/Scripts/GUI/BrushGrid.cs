@@ -63,9 +63,9 @@ namespace TiltBrush
             m_UIComponentManager = GetComponent<UIComponentManager>();
 
             BrushCatalog.m_Instance.BrushCatalogChanged += OnBrushCatalogChanged;
-            BrushController.m_Instance.BrushChanged += OnBrushChanged;
-            BrushController.m_Instance.BrushSetToDefault += OnBrushSetToDefault;
-            BrushController.m_Instance.StrokeSelected += OnStrokeSelected;
+            BrushController.instance.BrushChanged += OnBrushChanged;
+            BrushController.instance.BrushSetToDefault += OnBrushSetToDefault;
+            BrushController.instance.StrokeSelected += OnStrokeSelected;
             App.Switchboard.AudioReactiveStateChanged += OnAudioReactiveStateChanged;
 
             // Cache brush buttons.
@@ -255,7 +255,7 @@ namespace TiltBrush
 
         void RefreshButtonSelection()
         {
-            BrushDescriptor activeBrush = BrushController.m_Instance.ActiveBrush;
+            BrushDescriptor activeBrush = BrushController.instance.ActiveBrush;
             Debug.Assert(activeBrush != null);
             for (int i = 0; i < m_BrushButtons.Length; ++i)
             {
@@ -429,7 +429,7 @@ namespace TiltBrush
                     {
                         BrushDescriptor rBrush = BrushCatalog.m_Instance.GuiBrushList[iBrushIndex];
                         m_BrushButtons[i].SetButtonProperties(rBrush);
-                        m_BrushButtons[i].SetButtonSelected(rBrush == BrushController.m_Instance.ActiveBrush);
+                        m_BrushButtons[i].SetButtonSelected(rBrush == BrushController.instance.ActiveBrush);
                         m_BrushButtons[i].gameObject.SetActive(true);
                     }
                 }

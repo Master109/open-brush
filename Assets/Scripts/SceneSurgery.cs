@@ -105,10 +105,10 @@ namespace TiltBrush
         void Start()
         {
             m_ApplyOnSelect = false;
-            if (BrushController.m_Instance != null)
+            if (BrushController.instance != null)
             {
-                BrushController.m_Instance.StrokeSelected += OnStrokeSelected;
-                BrushController.m_Instance.BrushChanged += brushDescriptor =>
+                BrushController.instance.StrokeSelected += OnStrokeSelected;
+                BrushController.instance.BrushChanged += brushDescriptor =>
                 {
                     m_Brush = brushDescriptor.m_Guid.ToString("D");
                     Repaint();
