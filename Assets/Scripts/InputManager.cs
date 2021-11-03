@@ -16,9 +16,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Valve.VR;
-using KeyMap = System.Collections.Generic.Dictionary<
-    int,
-    UnityEngine.KeyCode[]>;
+using KeyMap = System.Collections.Generic.Dictionary<int, UnityEngine.KeyCode[]>;
+using TouchPhase = UnityEngine.TouchPhase;
 
 namespace TiltBrush
 {
@@ -264,9 +263,9 @@ namespace TiltBrush
         // Note that m_ControllerInfos is not the source of truth for controllers.  That's located
         // in VrSdk.m_VrControls.  These are potentially out of date for a frame when controllers
         // change.
-        public static ControllerInfo[] Controllers { get { return m_Instance.m_ControllerInfos; } }
-        public static ControllerInfo Wand { get { return Controllers[(int)ControllerName.Wand]; } }
-        public static ControllerInfo Brush { get { return Controllers[(int)ControllerName.Brush]; } }
+        public static ControllerInfo[] Controllers { get => m_Instance.m_ControllerInfos; }
+        public static ControllerInfo Wand { get => Controllers[(int)ControllerName.Wand]; }
+        public static ControllerInfo Brush { get => Controllers[(int)ControllerName.Brush]; }
         static public event Action OnSwapControllers;
 
         //
@@ -306,7 +305,7 @@ namespace TiltBrush
 
         public bool AllowVrControllers
         {
-            get { return m_AllowVrControllers; }
+            get => m_AllowVrControllers;
             set
             {
                 m_AllowVrControllers = value;
@@ -325,10 +324,7 @@ namespace TiltBrush
 
         public bool WandOnRight
         {
-            get
-            {
-                return m_WandOnRight;
-            }
+            get => m_WandOnRight;
 
             set
             {
@@ -423,41 +419,44 @@ namespace TiltBrush
             }
         }
 
-        bool SetSteamControllerStyle(SteamControllerInfo steamInfo, out string style)
-        {
-            SteamVR steamVR = SteamVR.instance;
-            style = steamVR.GetStringProperty(ETrackedDeviceProperty.Prop_ControllerType_String,
-                (uint)steamInfo.TrackedPose.GetDeviceIndex());
-            if (style == "oculus_touch")
-            {
-                App.VrSdk.SetControllerStyle(ControllerStyle.OculusTouch);
-            }
-            else if (style == "knuckles")
-            {
-                App.VrSdk.SetControllerStyle(ControllerStyle.Knuckles);
-            }
-            else if (style == "vive_controller" || style == "vive_pro")
-            {
-                App.VrSdk.SetControllerStyle(ControllerStyle.Vive);
-            }
-            else if (style == "vive_cosmos_controller")
-            {
-                App.VrSdk.SetControllerStyle(ControllerStyle.OculusTouch);
-            }
-            else if (style == "wmr")
-            {
-                App.VrSdk.SetControllerStyle(ControllerStyle.Wmr);
-            }
-            else
-            {
-                // Not recognized.  This is not necessarily bad.
-                return false;
-            }
-            return true;
-        }
-
+        // @bill : We'll decide this elsewhere.
+        // bool SetSteamControllerStyle(SteamControllerInfo steamInfo, out string style)
+        // {
+        //     SteamVR steamVR = SteamVR.instance;
+        //     style = steamVR.GetStringProperty(ETrackedDeviceProperty.Prop_ControllerType_String,
+        //         (uint)steamInfo.TrackedPose.GetDeviceIndex());
+        //     if (style == "oculus_touch")
+        //     {
+        //         App.VrSdk.SetControllerStyle(ControllerStyle.OculusTouch);
+        //     }
+        //     else if (style == "knuckles")
+        //     {
+        //         App.VrSdk.SetControllerStyle(ControllerStyle.Knuckles);
+        //     }
+        //     else if (style == "vive_controller" || style == "vive_pro")
+        //     {
+        //         App.VrSdk.SetControllerStyle(ControllerStyle.Vive);
+        //     }
+        //     else if (style == "vive_cosmos_controller")
+        //     {
+        //         App.VrSdk.SetControllerStyle(ControllerStyle.OculusTouch);
+        //     }
+        //     else if (style == "wmr")
+        //     {
+        //         App.VrSdk.SetControllerStyle(ControllerStyle.Wmr);
+        //     }
+        //     else
+        //     {
+        //         // Not recognized.  This is not necessarily bad.
+        //         return false;
+        //     }
+        //     return true;
+        // }
+        
         void Start()
         {
+            // XR devices should be discovered before Start, so can not create controllers.
+
             App.VrSdk.NewControllerPosesApplied += OnControllerPosesApplied;
             // If we're initializing SteamVR, defer this call until our controller type is determined.
             if (!App.VrSdk.IsInitializingSteamVr)
@@ -482,71 +481,73 @@ namespace TiltBrush
         void Update()
         {
             // If we're initializing our controllers, continue to look for them.
-            if (App.VrSdk.IsInitializingSteamVr)
-            {
-                if (m_ControllerInfos[0].IsTrackedObjectValid && m_ControllerInfos[1].IsTrackedObjectValid)
-                {
-                    SteamVR steamVR = SteamVR.instance;
-
-                    // Determine controllers from the 0 controller.  If that isn't recognized,
-                    // try the 1 controller.  If *that* isn't recognized, default to Vive.
-                    string controllerStyle0 = "";
-                    SteamControllerInfo steamInfo0 = m_ControllerInfos[0] as SteamControllerInfo;
-                    if (!SetSteamControllerStyle(steamInfo0, out controllerStyle0))
-                    {
-                        string controllerStyle1 = "";
-                        SteamControllerInfo steamInfo1 = m_ControllerInfos[1] as SteamControllerInfo;
-                        if (!SetSteamControllerStyle(steamInfo1, out controllerStyle1))
-                        {
-                            Debug.LogWarningFormat(
-                                "Controller styles {0} and {1} not recognized.  Defaulting to Vive.",
-                                controllerStyle0, controllerStyle1);
-                            App.VrSdk.SetControllerStyle(ControllerStyle.Vive);
-                        }
-                    }
-
-                    // Null out controller infos to start fresh.
-                    for (int i = 0; i < m_ControllerInfos.Length; ++i)
-                    {
-                        m_ControllerInfos[i] = null;
-                    }
-
-                    // Create new one controller infos.
-                    CreateControllerInfos();
-
-                    // Swap geometry if any of our controllers is a logipen.
-                    bool foundLogipen = false;
-                    for (int i = 0; i < m_ControllerInfos.Length; ++i)
-                    {
-                        SteamControllerInfo info = m_ControllerInfos[i] as SteamControllerInfo;
-                        DetectLogitechVrPen pen = info.Behavior.GetComponent<DetectLogitechVrPen>();
-                        if (pen != null)
-                        {
-                            pen.Initialize(info.TrackedPose.GetDeviceIndex());
-                            foundLogipen = foundLogipen || pen.IsPen;
-                        }
-                    }
-
-                    // Initialize handedness.
-                    // The logitech pen stomps handedness because it is a handed controller, so don't
-                    // respect this if we've got a pen.
-                    if (!foundLogipen)
-                    {
-                        WandOnRight = (PlayerPrefs.GetInt(PLAYER_PREF_WAND_ON_RIGHT, 0) != 0);
-                    }
-
-                    // Refresh pointer angle and rendering.
-                    PointerManager.m_Instance.RefreshFreePaintPointerAngle();
-                    PointerManager.m_Instance.RequestPointerRendering(true);
-                }
-            }
-            else
+            // if (App.VrSdk.IsInitializingSteamVr)
+            // {
+            //     if (m_ControllerInfos[0].IsTrackedObjectValid && m_ControllerInfos[1].IsTrackedObjectValid)
+            //     {
+            //         SteamVR steamVR = SteamVR.instance;
+            //
+            //         // Determine controllers from the 0 controller.  If that isn't recognized,
+            //         // try the 1 controller.  If *that* isn't recognized, default to Vive.
+            //         string controllerStyle0 = "";
+            //         SteamControllerInfo steamInfo0 = m_ControllerInfos[0] as SteamControllerInfo;
+            //         if (!SetSteamControllerStyle(steamInfo0, out controllerStyle0))
+            //         {
+            //             string controllerStyle1 = "";
+            //             SteamControllerInfo steamInfo1 = m_ControllerInfos[1] as SteamControllerInfo;
+            //             if (!SetSteamControllerStyle(steamInfo1, out controllerStyle1))
+            //             {
+            //                 Debug.LogWarningFormat(
+            //                     "Controller styles {0} and {1} not recognized.  Defaulting to Vive.",
+            //                     controllerStyle0, controllerStyle1);
+            //                 App.VrSdk.SetControllerStyle(ControllerStyle.Vive);
+            //             }
+            //         }
+            //
+            //         // Null out controller infos to start fresh.
+            //         for (int i = 0; i < m_ControllerInfos.Length; ++i)
+            //         {
+            //             m_ControllerInfos[i] = null;
+            //         }
+            //
+            //         // Create new one controller infos.
+            //         CreateControllerInfos();
+            //
+            //         // Swap geometry if any of our controllers is a logipen.
+            //         bool foundLogipen = false;
+            //         for (int i = 0; i < m_ControllerInfos.Length; ++i)
+            //         {
+            //             SteamControllerInfo info = m_ControllerInfos[i] as SteamControllerInfo;
+            //             DetectLogitechVrPen pen = info.Behavior.GetComponent<DetectLogitechVrPen>();
+            //             if (pen != null)
+            //             {
+            //                 pen.Initialize(info.TrackedPose.GetDeviceIndex());
+            //                 foundLogipen = foundLogipen || pen.IsPen;
+            //             }
+            //         }
+            //
+            //         // Initialize handedness.
+            //         // The logitech pen stomps handedness because it is a handed controller, so don't
+            //         // respect this if we've got a pen.
+            //         if (!foundLogipen)
+            //         {
+            //             WandOnRight = (PlayerPrefs.GetInt(PLAYER_PREF_WAND_ON_RIGHT, 0) != 0);
+            //         }
+            //
+            //         // Refresh pointer angle and rendering.
+            //         PointerManager.m_Instance.RefreshFreePaintPointerAngle();
+            //         PointerManager.m_Instance.RequestPointerRendering(true);
+            //     }
+            // }
+            // else
             {
                 // Update controller infos.
                 for (int i = 0; i < m_ControllerInfos.Length; ++i)
                 {
                     m_ControllerInfos[i].Update();
                 }
+
+                App.VrSdk.OnNewPoses(); // TODO-XR - HACK??
 
                 //cache touch inputs so we can control their usage
                 m_Touch.m_Valid = (Input.touchCount > 0) && (Input.GetTouch(0).phase == TouchPhase.Began);
@@ -584,13 +585,14 @@ namespace TiltBrush
 
                 // Update velocity and acceleration.
                 Vector3 currPosition = info.Transform.position;
+
                 // TODO: should this take velocity straight from the controller?
                 // Might be more accurate
                 Vector3 currVelocity = (currPosition - info.m_Position) / Time.deltaTime;
-                info.m_Acceleration =
-                    (currVelocity - info.m_Velocity) / Time.deltaTime;
+                info.m_Acceleration = (currVelocity - info.m_Velocity) / Time.deltaTime;
                 info.m_Velocity = currVelocity;
                 info.m_Position = currPosition;
+
                 if (info.m_WasTracked != info.IsTrackedObjectValid)
                 {
                     info.ShowController(info.IsTrackedObjectValid && App.Instance.ShowControllers);
@@ -847,17 +849,17 @@ namespace TiltBrush
             return Input.GetAxis("Mouse ScrollWheel");
         }
 
-        /// Mouse input is ignored on mobile platform because the Oculus Quest seems to emulate mouse
-        /// presses when you fiddle with the joystick.
         public bool GetMouseButton(int button)
         {
+            // Mouse input is ignored on mobile platform because the Oculus Quest seems to emulate mouse
+            // presses when you fiddle with the joystick.
             return !App.Config.IsMobileHardware && Input.GetMouseButton(button);
         }
 
-        /// Mouse input is ignored on mobile platform because the Oculus Quest seems to emulate mouse
-        /// presses when you fiddle with the joystick.
         public bool GetMouseButtonDown(int button)
         {
+            // Mouse input is ignored on mobile platform because the Oculus Quest seems to emulate mouse
+            // presses when you fiddle with the joystick.
             return !App.Config.IsMobileHardware && Input.GetMouseButtonDown(button);
         }
 

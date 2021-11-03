@@ -50,16 +50,20 @@ namespace TiltBrush
         void Start()
         {
 #if false
-    SketchControlsScript.m_Instance.OnStraightEdgeEnabled += () => {
-      if (! m_isProfiling) {
-        OutputWindowScript.m_Instance.AddNewLine("Profile: on");
-        m_disableAfterFrames = -1;
-        EnableProfile();
-      } else {
-        OutputWindowScript.m_Instance.AddNewLine("Profile: off");
-        DisableProfile();
-      }
-    };
+            SketchControlsScript.m_Instance.OnStraightEdgeEnabled += () =>
+            {
+                if (!m_isProfiling)
+                {
+                    OutputWindowScript.m_Instance.AddNewLine("Profile: on");
+                    m_disableAfterFrames = -1;
+                    EnableProfile();
+                }
+                else
+                {
+                    OutputWindowScript.m_Instance.AddNewLine("Profile: off");
+                    DisableProfile();
+                }
+            };
 #endif
         }
 
@@ -159,7 +163,7 @@ namespace TiltBrush
         }
 
 #if UNITY_EDITOR
-        [UnityEditor.MenuItem("Tilt/Load Profile")]
+        [UnityEditor.MenuItem("OpenBrush/Load Profile")]
         static void MenuItem_LoadProfiler()
         {
             UnityEngine.Profiling.Profiler.AddFramesFromFile(LOG_FILE_BASE);
