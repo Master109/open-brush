@@ -63,6 +63,7 @@ MonoBehaviour:
     previousThumbstickInput: {x: 0, y: 0}
     previousPosition: {x: 0, y: 0, z: 0}
     gripTrs: {fileID: 0}
+    pointerParent: {fileID: 0}
     currrentBrush: {fileID: 0}
   rightHand:
     isLeftHand: 0
@@ -81,8 +82,11 @@ MonoBehaviour:
     previousThumbstickInput: {x: 0, y: 0}
     previousPosition: {x: 0, y: 0, z: 0}
     gripTrs: {fileID: 0}
+    pointerParent: {fileID: 0}
     currrentBrush: {fileID: 0}
   minAngleToSwitchHands: 135
   maxDistanceToSwitchHands: 0.5
   minSpeedToSwitchHands: 0.1
   menusInLeftHand: 1
+  swapHandsEffectPrefab: {fileID: 8831691899292443112, guid: f5dfba132758d4e4aaac3aa928273047,
+    type: 3}
